@@ -1,15 +1,16 @@
 /**
-  Implement a list of integer intElements, including
-  both data and operations.
+  Implement a list of diverse types, including
+  integers, double-precision floating point numbers,
+  and Strings.
  */
 
 public class List_inArraySlots {
 
-    private int[] intElements;
-    private double[] doubleElements;
-    private String[] stringElements;
-    private int filledElements; // the number of intElements in this list
+    // ================================================================
+    // FIELDS
     
+    private int filledElements; // the number of elements in this list
+
     /* type identifier for each element
        That is, typeOfElements[i] == 0 means element i is an integer;
                                      1 means element i is a double;
@@ -17,27 +18,28 @@ public class List_inArraySlots {
         Optional extra education in programming (not comp sci):
             replace these "magic numbers" with an "enumerated type".
      */
-    private int[] typeOfElements;
+    private Element[] list;
 
     private static final int INITIAL_CAPACITY = 10;
-
+    
+    // ================================================================
+    // CONSTRUCTORS
+    
     /**
       Construct an empty list with a small initial capacity.
      */
     public List_inArraySlots() {
-        intElements = new int[ INITIAL_CAPACITY];
-        doubleElements = new double[ INITIAL_CAPACITY];
-        stringElements = new String[ INITIAL_CAPACITY];
-        typeOfElements = new int[ INITIAL_CAPACITY];
-                
+      list = new Element[INITIAL_CAPACITY];
     }
-
-
+    
+    // ================================================================
+    // METHODS
+    
     /**
-      @return the number of intElements in this list
+      @return the number of elements in this list
      */
     public int size() {
-        return (intElements.length + doubleElements.length + stringElements.length);
+      return filledElements;
     }
 
 
@@ -46,14 +48,13 @@ public class List_inArraySlots {
        in [a,b,c,] format
       */
     public String toString() {
-    String total = "";
-    total += System.lineSeparator();
-    for (int i: intElements) {total += i + ", ";}
-    total += System.lineSeparator();
-    for (double d: doubleElements) {total += d + ", ";}
-    total += System.lineSeparator();
-    for (String s: stringElements) {total += s + ", ";}
-    return (total);
+      String stringRep = "[";
+      
+      for (int index = 0; index < filledElements; index++)
+        stringRep += list[index] + ",";
+
+      stringRep += "]";
+      return stringRep;
     }
 
 
@@ -63,19 +64,25 @@ public class List_inArraySlots {
       @return true, in keeping with conventions yet to be discussed
      */
      public boolean add( int type   // same meaning as in typeOfElements
-                       , int intValue
+                       , int    intValue
                        , double doubleValue
                        , String stringValue
                        ) {
-        if( filledElements == intElements.length) expand();
+        // expand when at max
+        if (filledElements == list.length) expand();
         
-        typeOfElements[filledElements] = type;
-        intElements[filledElements] = intValue;
-        doubleElements[filledElements] = doubleValue;
-        stringElements[filledElements++] = stringValue;
+        // create new instance using param and add 
+        list[filledElements] = new Element(type, intValue, doubleValue, stringValue);
+
+        // update size
+        filledElements++;
+
         return true;
-                       
      }
+
+    public Element get(int index){
+        return list[index];
+    }
 
 
     /**
@@ -90,25 +97,18 @@ public class List_inArraySlots {
               this method is called when that is appropriate.
               So test using the println(), then comment it out.
               */
-        int[] typeBigger = new int[ typeOfElements.length * 2];
-        for( int elemIndex = 0; elemIndex < filledElements; elemIndex++)
-            typeBigger[ elemIndex] = typeOfElements[ elemIndex];
-        typeOfElements = typeBigger;
-              
-        int[] intBigger = new int[ intElements.length * 2];
-        for( int elemIndex = 0; elemIndex < filledElements; elemIndex++)
-            intBigger[ elemIndex] = intElements[ elemIndex];
-        intElements = intBigger;
-        
-        double[] doubleBigger = new double[ doubleElements.length * 2];
-        for( int elemIndex = 0; elemIndex < filledElements; elemIndex++)
-            doubleBigger[ elemIndex] = doubleElements[ elemIndex];
-        doubleElements = doubleBigger;      
-        
-        String[] stringBigger = new String[ stringElements.length * 2];
-        for( int elemIndex = 0; elemIndex < filledElements; elemIndex++)
-            stringBigger[ elemIndex] = stringElements[ elemIndex];
-        stringElements = stringBigger;
-        
-      }
+
+       //System.out.println( "old length:" + typeOfElements.length);
+
+        // create new list, copy values over, and replace list
+        Element[] bigger = new Element[list.length * 2];
+        for(int index=0;index<list.length; index++){
+            bigger[index] = list[index];
+        }
+        list = bigger;
+
+
+       // System.out.println( "new length:" + typeOfElements.length);
+
+     }
 }
